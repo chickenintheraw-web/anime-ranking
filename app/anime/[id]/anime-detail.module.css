@@ -1,0 +1,81 @@
+.main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+.main h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.romaji {
+  margin-top: 4px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.meta {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.sectionTitle {
+  margin-top: 40px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.empty {
+  margin-top: 16px;
+  color: var(--muted);
+}
+
+.list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: var(--surface);
+}
+
+.opNumber {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 36px;
+}
+
+.opInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.opTitle {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.opArtist {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.opRating {
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
