@@ -1,0 +1,14 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "anime-ranking",
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2026-05-05",
+	"compatibility_flags": ["nodejs_compat"],
+	"assets": {
+		"directory": ".open-next/assets"
+	},
+	"vars": {
+		"NEXT_PUBLIC_SUPABASE_URL": "https://wfeffuyhszbrezlyfruz.supabase.co",
+		"NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_P8t2cJiyJri1e__4eimXVA_bprULQm-"
+	}
+}

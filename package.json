@@ -6,15 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:worker": "node scripts/patch-opennext.mjs && opennextjs-cloudflare build && node scripts/patch-handler.mjs",
+    "deploy": "npm run build:worker && wrangler deploy",
+    "preview": "npm run build:worker && wrangler dev",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.0",
     "next": "16.2.12",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.2",
     "eslint": "^9",
-    "eslint-config-next": "16.2.12"
+    "eslint-config-next": "16.2.12",
+    "supabase": "^2.111.0",
+    "wrangler": "^4.118.0"
   }
 }
