@@ -3,17 +3,14 @@
 import VideoTile from './VideoTile';
 import styles from './theme-rank.module.css';
 
-export default function PlacementModal({
-  list,
-  candidate,
-  center,
-  onMoveUp,
-  onMoveDown,
-  onConfirm,
-  onCancel,
-}) {
+export default function PlacementModal({ list, candidate, center, onMoveBy, onConfirm, onCancel }) {
   const above = center > 0 ? list[center - 1] : null;
   const below = center < list.length ? list[center] : null;
+
+  const atTop = center === 0;
+  const atBottom = center === list.length;
+  const show5 = list.length >= 5;
+  const show10 = list.length >= 10;
 
   return (
     <div className={styles.overlay}>
@@ -48,20 +45,41 @@ export default function PlacementModal({
         </div>
 
         <div className={styles.modalActions}>
-          <button type="button" onClick={onMoveUp} disabled={center === 0} className={styles.modalButton}>
-            ▲ Rank Higher
-          </button>
+          <div className={styles.modalButtonGroup}>
+            {show10 && (
+              <button type="button" onClick={() => onMoveBy(-10)} disabled={atTop} className={styles.modalButton}>
+                ▲ Rank 10 Higher
+              </button>
+            )}
+            {show5 && (
+              <button type="button" onClick={() => onMoveBy(-5)} disabled={atTop} className={styles.modalButton}>
+                ▲ Rank 5 Higher
+              </button>
+            )}
+            <button type="button" onClick={() => onMoveBy(-1)} disabled={atTop} className={styles.modalButton}>
+              ▲ Rank Higher
+            </button>
+          </div>
+
           <button type="button" onClick={onConfirm} className={styles.modalConfirm}>
             Confirm at #{center + 1}
           </button>
-          <button
-            type="button"
-            onClick={onMoveDown}
-            disabled={center === list.length}
-            className={styles.modalButton}
-          >
-            ▼ Rank Lower
-          </button>
+
+          <div className={styles.modalButtonGroup}>
+            <button type="button" onClick={() => onMoveBy(1)} disabled={atBottom} className={styles.modalButton}>
+              ▼ Rank Lower
+            </button>
+            {show5 && (
+              <button type="button" onClick={() => onMoveBy(5)} disabled={atBottom} className={styles.modalButton}>
+                ▼ Rank 5 Lower
+              </button>
+            )}
+            {show10 && (
+              <button type="button" onClick={() => onMoveBy(10)} disabled={atBottom} className={styles.modalButton}>
+                ▼ Rank 10 Lower
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

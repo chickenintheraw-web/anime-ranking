@@ -9,7 +9,8 @@ import styles from './theme-rank.module.css';
 export default function ThemeRankingBuilder({ entityLabel, candidates, initialList, saveAction }) {
   const [list, setList] = useState(initialList);
   const [query, setQuery] = useState('');
-  const [placing, setPlacing] = useState(null); // { candidate, center } | null
+  const [selectingFor, setSelectingFor] = useState(null); // candidate | null — picking a slot
+  const [placing, setPlacing] = useState(null); // { candidate, center } | null — modal open
   const [pending, startTransition] = useTransition();
 
   const rankOf = useMemo(() => {
@@ -37,6 +38,10 @@ export default function ThemeRankingBuilder({ entityLabel, candidates, initialLi
     });
   }
 
+  // First entry skips straight to #1 — nothing to compare against yet.
+  // Otherwise, select this candidate and let the user click a slot in the
+  // ranking panel (rather than always starting the comparison at the
+  // bottom, which would force walking up one step at a time on a long list).
   function startPlacing(candidate) {
     if (list.length === 0) {
       const next = [candidate];
@@ -44,15 +49,19 @@ export default function ThemeRankingBuilder({ entityLabel, candidates, initialLi
       persist(next);
       return;
     }
-    setPlacing({ candidate, center: list.length });
+    setSelectingFor((cur) => (cur?.id === candidate.id ? null : candidate));
   }
 
-  function moveUp() {
-    setPlacing((p) => (p ? { ...p, center: Math.max(0, p.center - 1) } : p));
+  function pickSlot(index) {
+    if (!selectingFor) return;
+    setPlacing({ candidate: selectingFor, center: index });
+    setSelectingFor(null);
   }
 
-  function moveDown() {
-    setPlacing((p) => (p ? { ...p, center: Math.min(list.length, p.center + 1) } : p));
+  function moveBy(amount) {
+    setPlacing((p) =>
+      p ? { ...p, center: Math.min(list.length, Math.max(0, p.center + amount)) } : p
+    );
   }
 
   function confirmPlacement() {
@@ -99,9 +108,14 @@ export default function ThemeRankingBuilder({ entityLabel, candidates, initialLi
                 </li>
               );
             }
+            const isSelecting = selectingFor?.id === c.id;
             return (
               <li key={c.id}>
-                <button type="button" className={styles.result} onClick={() => startPlacing(c)}>
+                <button
+                  type="button"
+                  className={isSelecting ? styles.resultSelecting : styles.result}
+                  onClick={() => startPlacing(c)}
+                >
                   <span className={styles.resultInfo}>
                     <span className={styles.resultTitle}>{c.title}</span>
                     <span className={styles.resultMeta}>
@@ -122,6 +136,21 @@ export default function ThemeRankingBuilder({ entityLabel, candidates, initialLi
           {pending && <span className={styles.saving}>Saving…</span>}
         </div>
 
+        {selectingFor && (
+          <div className={styles.selectingBanner}>
+            <span>
+              Click where <strong>{selectingFor.title}</strong> belongs.
+            </span>
+            <button
+              type="button"
+              className={styles.cancelLink}
+              onClick={() => setSelectingFor(null)}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+
         {list.length === 0 ? (
           <p className={styles.empty}>
             Search on the left and add your first {entityLabel} — it becomes
@@ -129,23 +158,41 @@ export default function ThemeRankingBuilder({ entityLabel, candidates, initialLi
           </p>
         ) : (
           <ol className={styles.rankingList}>
-            {list.map((item, i) => (
-              <li key={item.id} className={styles.rankingItem}>
-                <span className={styles.placement}>{i + 1}</span>
-                <span className={styles.rankingInfo}>
-                  <span className={styles.rankingTitle}>{item.title}</span>
-                  <span className={styles.rankingMeta}>{item.animeTitle}</span>
-                </span>
-                <button
-                  type="button"
-                  className={styles.removeButton}
-                  onClick={() => remove(item.id)}
-                  aria-label="Remove"
-                >
-                  ✕
+            {selectingFor && (
+              <li key="slot-0">
+                <button type="button" className={styles.slot} onClick={() => pickSlot(0)}>
+                  Place here — #1
                 </button>
               </li>
-            ))}
+            )}
+            {list.flatMap((item, i) => {
+              const row = (
+                <li key={item.id} className={styles.rankingItem}>
+                  <span className={styles.placement}>{i + 1}</span>
+                  <span className={styles.rankingInfo}>
+                    <span className={styles.rankingTitle}>{item.title}</span>
+                    <span className={styles.rankingMeta}>{item.animeTitle}</span>
+                  </span>
+                  <button
+                    type="button"
+                    className={styles.removeButton}
+                    onClick={() => remove(item.id)}
+                    aria-label="Remove"
+                  >
+                    ✕
+                  </button>
+                </li>
+              );
+              if (!selectingFor) return [row];
+              const slot = (
+                <li key={`slot-${i + 1}`}>
+                  <button type="button" className={styles.slot} onClick={() => pickSlot(i + 1)}>
+                    Place here — #{i + 2}
+                  </button>
+                </li>
+              );
+              return [row, slot];
+            })}
           </ol>
         )}
       </div>
@@ -155,8 +202,7 @@ export default function ThemeRankingBuilder({ entityLabel, candidates, initialLi
           list={list}
           candidate={placing.candidate}
           center={placing.center}
-          onMoveUp={moveUp}
-          onMoveDown={moveDown}
+          onMoveBy={moveBy}
           onConfirm={confirmPlacement}
           onCancel={() => setPlacing(null)}
         />
