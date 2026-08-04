@@ -25,11 +25,13 @@ export default async function RankPage() {
             <span className={styles.chooserTitle}>Rank Anime</span>
             <span className={styles.chooserDesc}>Order the anime you&apos;ve watched.</span>
           </Link>
-          <Link href="/rank/theme" className={styles.chooserCard}>
-            <span className={styles.chooserTitle}>Rank Themes</span>
-            <span className={styles.chooserDesc}>
-              Order your favorite openings and endings.
-            </span>
+          <Link href="/rank/opening" className={styles.chooserCard}>
+            <span className={styles.chooserTitle}>Rank Openings</span>
+            <span className={styles.chooserDesc}>Order your favorite opening themes.</span>
+          </Link>
+          <Link href="/rank/ending" className={styles.chooserCard}>
+            <span className={styles.chooserTitle}>Rank Endings</span>
+            <span className={styles.chooserDesc}>Order your favorite ending themes.</span>
           </Link>
         </div>
       )}

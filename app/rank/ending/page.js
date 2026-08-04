@@ -2,26 +2,23 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { sb } from '@/lib/supabase/anon';
 import RankingBuilder from '../RankingBuilder';
-import { saveThemeRanking } from './actions';
+import { themeLabel } from '../themeLabel';
+import { saveEndingRanking } from './actions';
 import styles from '../rank.module.css';
 
-function labelFor(theme) {
-  const anime = theme.anime?.title ?? 'Unknown';
-  return `${anime} — ${theme.theme_type}${theme.sequence_number} — ${theme.title}`;
-}
-
-export default async function RankThemePage() {
+export default async function RankEndingPage() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect('/login?next=/rank/theme');
+  if (!user) redirect('/login?next=/rank/ending');
 
   const [{ data: themes }, { data: ranking }] = await Promise.all([
     sb
       .from('themes')
-      .select('id, theme_type, sequence_number, title, artist, anime:anime_id(title)'),
+      .select('id, theme_type, sequence_number, title, artist, anime:anime_id(title)')
+      .eq('theme_type', 'ED'),
     supabase
       .from('theme_rankings')
       .select(
@@ -31,23 +28,25 @@ export default async function RankThemePage() {
       .order('placement', { ascending: true }),
   ]);
 
-  const candidates = (themes ?? []).map((t) => ({ id: t.id, label: labelFor(t) }));
-  const initialRanking = (ranking ?? []).map((r) => ({
+  const endingRanking = (ranking ?? []).filter((r) => r.theme?.theme_type === 'ED');
+
+  const candidates = (themes ?? []).map((t) => ({ id: t.id, label: themeLabel(t) }));
+  const initialRanking = endingRanking.map((r) => ({
     id: r.theme_id,
-    label: r.theme ? labelFor(r.theme) : 'Unknown',
+    label: r.theme ? themeLabel(r.theme) : 'Unknown',
   }));
 
   return (
     <main className={styles.main}>
-      <h1>Rank Themes</h1>
+      <h1>Rank Endings</h1>
       <p className={styles.subtitle}>
-        Search for openings and endings to add, then reorder your list.
+        Search for ending themes to add, then reorder your list.
       </p>
       <RankingBuilder
-        entityLabel="themes"
+        entityLabel="endings"
         candidates={candidates}
         initialRanking={initialRanking}
-        saveAction={saveThemeRanking}
+        saveAction={saveEndingRanking}
       />
     </main>
   );

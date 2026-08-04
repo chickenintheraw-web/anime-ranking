@@ -2,26 +2,20 @@ import Link from "next/link";
 import { getAnimeLeaderboard, getThemeLeaderboard } from "@/lib/data";
 import styles from "./leaderboard.module.css";
 
-function buildQuery(base, overrides) {
-  const merged = { ...base, ...overrides };
-  const params = new URLSearchParams();
-  for (const [key, value] of Object.entries(merged)) {
-    if (value) params.set(key, String(value));
-  }
-  return params.toString();
-}
+const TABS = [
+  { type: "anime", label: "Anime" },
+  { type: "opening", label: "Openings" },
+  { type: "ending", label: "Endings" },
+];
 
 export default async function LeaderboardPage({ searchParams }) {
   const sp = await searchParams;
-  const type = sp.type === "theme" ? "theme" : "anime";
-  const themeType = sp.themeType || "";
+  const type = TABS.some((t) => t.type === sp.type) ? sp.type : "anime";
 
   const rows =
     type === "anime"
       ? await getAnimeLeaderboard()
-      : await getThemeLeaderboard(themeType || null);
-
-  const filters = { type, themeType };
+      : await getThemeLeaderboard(type === "opening" ? "OP" : "ED");
 
   return (
     <main className={styles.main}>
@@ -32,42 +26,16 @@ export default async function LeaderboardPage({ searchParams }) {
       </p>
 
       <div className={styles.tabs}>
-        <Link
-          href={`/leaderboard?${buildQuery(filters, { type: "anime", themeType: "" })}`}
-          className={type === "anime" ? styles.tabActive : styles.tab}
-        >
-          Anime
-        </Link>
-        <Link
-          href={`/leaderboard?${buildQuery(filters, { type: "theme" })}`}
-          className={type === "theme" ? styles.tabActive : styles.tab}
-        >
-          Themes
-        </Link>
+        {TABS.map((tab) => (
+          <Link
+            key={tab.type}
+            href={`/leaderboard?type=${tab.type}`}
+            className={type === tab.type ? styles.tabActive : styles.tab}
+          >
+            {tab.label}
+          </Link>
+        ))}
       </div>
-
-      {type === "theme" && (
-        <div className={styles.subtabs}>
-          <Link
-            href={`/leaderboard?${buildQuery(filters, { themeType: "" })}`}
-            className={!themeType ? styles.subtabActive : styles.subtab}
-          >
-            All
-          </Link>
-          <Link
-            href={`/leaderboard?${buildQuery(filters, { themeType: "OP" })}`}
-            className={themeType === "OP" ? styles.subtabActive : styles.subtab}
-          >
-            Openings
-          </Link>
-          <Link
-            href={`/leaderboard?${buildQuery(filters, { themeType: "ED" })}`}
-            className={themeType === "ED" ? styles.subtabActive : styles.subtab}
-          >
-            Endings
-          </Link>
-        </div>
-      )}
 
       {rows.length === 0 ? (
         <p className={styles.empty}>No votes yet — be the first to rank.</p>
@@ -97,8 +65,6 @@ export default async function LeaderboardPage({ searchParams }) {
                     <span className={styles.title}>{row.theme_title}</span>
                     <span className={styles.animeTitle}>
                       <Link href={`/anime/${row.anime_id}`}>{row.anime_title}</Link>
-                      {" • "}
-                      {row.theme_type}
                       {row.artist ? ` • ${row.artist}` : ""}
                     </span>
                   </span>

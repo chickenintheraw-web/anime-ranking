@@ -27,8 +27,11 @@ export default async function ProfilePage() {
         <Link href="/rank/anime" className={styles.link}>
           Edit my anime ranking
         </Link>
-        <Link href="/rank/theme" className={styles.link}>
-          Edit my theme ranking
+        <Link href="/rank/opening" className={styles.link}>
+          Edit my opening ranking
+        </Link>
+        <Link href="/rank/ending" className={styles.link}>
+          Edit my ending ranking
         </Link>
       </div>
 

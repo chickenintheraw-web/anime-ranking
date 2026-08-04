@@ -41,29 +41,6 @@
   border-color: var(--accent);
 }
 
-.subtabs {
-  margin-top: 12px;
-  display: flex;
-  gap: 16px;
-}
-
-.subtab,
-.subtabActive {
-  font-size: 13px;
-  font-weight: 600;
-  padding-bottom: 4px;
-  border-bottom: 2px solid transparent;
-}
-
-.subtab {
-  color: var(--muted);
-}
-
-.subtabActive {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-
 .empty {
   margin-top: 32px;
   color: var(--muted);
