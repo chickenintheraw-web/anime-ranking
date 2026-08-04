@@ -32,6 +32,30 @@
   gap: 12px;
 }
 
+.leftTabs {
+  display: flex;
+  gap: 6px;
+}
+
+.leftTab,
+.leftTabActive {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+}
+
+.leftTab {
+  color: var(--muted);
+}
+
+.leftTabActive {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--accent);
+}
+
 .searchInput {
   height: 42px;
   padding: 0 14px;
@@ -100,9 +124,29 @@
 }
 
 .resultInfo {
+  flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
+}
+
+.rowStats {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rowRank {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.rowAvg {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
 }
 
 .resultTitle {

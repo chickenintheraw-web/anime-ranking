@@ -4,11 +4,32 @@ import { useMemo, useState, useTransition } from 'react';
 import PlacementModal from './PlacementModal';
 import styles from './theme-rank.module.css';
 
+function currentSeason(date = new Date()) {
+  const m = date.getMonth(); // 0-11
+  if (m === 11 || m <= 1) return 'winter';
+  if (m <= 4) return 'spring';
+  if (m <= 7) return 'summer';
+  return 'fall';
+}
+
+const LEFT_TABS = [
+  { key: 'search', label: 'Search' },
+  { key: 'top', label: 'Top Rated' },
+  { key: 'season', label: 'This Season' },
+];
+
 // Shared by /rank/opening and /rank/ending — identical mechanic, just a
 // different theme_type of candidate and a different label for copy.
-export default function ThemeRankingBuilder({ entityLabel, candidates, initialList, saveAction }) {
+export default function ThemeRankingBuilder({
+  entityLabel,
+  candidates,
+  initialList,
+  saveAction,
+  topRated = [],
+}) {
   const [list, setList] = useState(initialList);
   const [query, setQuery] = useState('');
+  const [leftTab, setLeftTab] = useState('search');
   const [selectingFor, setSelectingFor] = useState(null); // candidate | null — picking a slot
   const [placing, setPlacing] = useState(null); // { candidate, center } | null — modal open
   const [pending, startTransition] = useTransition();
@@ -31,6 +52,12 @@ export default function ThemeRankingBuilder({ entityLabel, candidates, initialLi
       : candidates;
     return [...filtered].sort((a, b) => a.animeTitle.localeCompare(b.animeTitle));
   }, [query, candidates]);
+
+  const seasonResults = useMemo(() => {
+    const season = currentSeason();
+    const year = new Date().getFullYear();
+    return candidates.filter((c) => c.releaseSeason === season && c.releaseYear === year);
+  }, [candidates]);
 
   function persist(nextList) {
     startTransition(async () => {
@@ -79,55 +106,100 @@ export default function ThemeRankingBuilder({ entityLabel, candidates, initialLi
     persist(next);
   }
 
+  function renderRow(c, extra) {
+    const rank = rankOf.get(c.id);
+    if (rank) {
+      return (
+        <li key={c.id}>
+          <div className={styles.resultRanked}>
+            <span className={styles.rankBadge}>#{rank}</span>
+            <span className={styles.resultInfo}>
+              <span className={styles.resultTitle}>{c.title}</span>
+              <span className={styles.resultMeta}>
+                {c.animeTitle}
+                {c.artist ? ` · ${c.artist}` : ''}
+              </span>
+            </span>
+            {extra}
+          </div>
+        </li>
+      );
+    }
+    const isSelecting = selectingFor?.id === c.id;
+    return (
+      <li key={c.id}>
+        <button
+          type="button"
+          className={isSelecting ? styles.resultSelecting : styles.result}
+          onClick={() => startPlacing(c)}
+        >
+          <span className={styles.resultInfo}>
+            <span className={styles.resultTitle}>{c.title}</span>
+            <span className={styles.resultMeta}>
+              {c.animeTitle}
+              {c.artist ? ` · ${c.artist}` : ''}
+            </span>
+          </span>
+          {extra}
+        </button>
+      </li>
+    );
+  }
+
   return (
     <div className={styles.layout}>
       <div className={styles.searchPanel}>
-        <input
-          type="text"
-          placeholder={`Search ${entityLabel}s…`}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className={styles.searchInput}
-        />
-        <ul className={styles.resultsList}>
-          {results.map((c) => {
-            const rank = rankOf.get(c.id);
-            if (rank) {
-              return (
-                <li key={c.id}>
-                  <div className={styles.resultRanked}>
-                    <span className={styles.rankBadge}>#{rank}</span>
-                    <span className={styles.resultInfo}>
-                      <span className={styles.resultTitle}>{c.title}</span>
-                      <span className={styles.resultMeta}>
-                        {c.animeTitle}
-                        {c.artist ? ` · ${c.artist}` : ''}
-                      </span>
-                    </span>
-                  </div>
-                </li>
-              );
-            }
-            const isSelecting = selectingFor?.id === c.id;
-            return (
-              <li key={c.id}>
-                <button
-                  type="button"
-                  className={isSelecting ? styles.resultSelecting : styles.result}
-                  onClick={() => startPlacing(c)}
-                >
-                  <span className={styles.resultInfo}>
-                    <span className={styles.resultTitle}>{c.title}</span>
-                    <span className={styles.resultMeta}>
-                      {c.animeTitle}
-                      {c.artist ? ` · ${c.artist}` : ''}
-                    </span>
+        <div className={styles.leftTabs}>
+          {LEFT_TABS.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              className={leftTab === t.key ? styles.leftTabActive : styles.leftTab}
+              onClick={() => setLeftTab(t.key)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {leftTab === 'search' && (
+          <>
+            <input
+              type="text"
+              placeholder={`Search ${entityLabel}s…`}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+            <ul className={styles.resultsList}>{results.map((c) => renderRow(c))}</ul>
+          </>
+        )}
+
+        {leftTab === 'top' &&
+          (topRated.length === 0 ? (
+            <p className={styles.empty}>No votes yet — be the first to rank.</p>
+          ) : (
+            <ul className={styles.resultsList}>
+              {topRated.map((c, i) =>
+                renderRow(
+                  c,
+                  <span className={styles.rowStats}>
+                    <span className={styles.rowRank}>#{i + 1}</span>
+                    <span className={styles.rowAvg}>{c.avgPlacement}</span>
                   </span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+                )
+              )}
+            </ul>
+          ))}
+
+        {leftTab === 'season' &&
+          (seasonResults.length === 0 ? (
+            <p className={styles.empty}>
+              No {entityLabel}s marked as releasing this season yet.
+            </p>
+          ) : (
+            <ul className={styles.resultsList}>{seasonResults.map((c) => renderRow(c))}</ul>
+          ))}
       </div>
 
       <div className={styles.rankingPanel}>

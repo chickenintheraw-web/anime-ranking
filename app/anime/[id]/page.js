@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAnimeWithThemes } from "@/lib/data";
+import { getSessionAndAdmin } from "@/lib/admin";
 import VariantButtons from "./VariantButtons";
 import styles from "./anime-detail.module.css";
 
@@ -9,7 +11,10 @@ function cap(s) {
 
 export default async function AnimeDetailPage({ params }) {
   const { id } = await params;
-  const anime = await getAnimeWithThemes(id);
+  const [anime, { isAdmin }] = await Promise.all([
+    getAnimeWithThemes(id),
+    getSessionAndAdmin(),
+  ]);
 
   if (!anime) notFound();
 
@@ -22,18 +27,69 @@ export default async function AnimeDetailPage({ params }) {
 
   return (
     <main className={styles.main}>
-      <h1>{anime.title}</h1>
-      {anime.title_romaji && anime.title_romaji !== anime.title && (
-        <p className={styles.romaji}>{anime.title_romaji}</p>
-      )}
-      <p className={styles.meta}>
-        {[anime.format, [cap(anime.season), anime.year].filter(Boolean).join(" ")]
-          .filter(Boolean)
-          .join(" • ")}
-      </p>
+      <div className={styles.layout}>
+        <aside className={styles.sidebar}>
+          <div className={styles.cover}>
+            {anime.cover_image_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={anime.cover_image_url} alt="" />
+            ) : (
+              <span className={styles.coverFallback}>{anime.title.slice(0, 1)}</span>
+            )}
+          </div>
 
-      <ThemeSection title="Openings" themes={openings} animeId={anime.id} animeTitle={anime.title} />
-      <ThemeSection title="Endings" themes={endings} animeId={anime.id} animeTitle={anime.title} />
+          {(anime.season || anime.year) && (
+            <div className={styles.metaBlock}>
+              <span className={styles.metaLabel}>Premiere</span>
+              <span className={styles.metaValue}>
+                {[cap(anime.season), anime.year].filter(Boolean).join(" ")}
+              </span>
+            </div>
+          )}
+
+          {anime.format && (
+            <div className={styles.metaBlock}>
+              <span className={styles.metaLabel}>Format</span>
+              <span className={styles.metaValue}>{anime.format}</span>
+            </div>
+          )}
+
+          {anime.studio && (
+            <div className={styles.metaBlock}>
+              <span className={styles.metaLabel}>Studio</span>
+              <span className={styles.metaValue}>{anime.studio}</span>
+            </div>
+          )}
+        </aside>
+
+        <div className={styles.content}>
+          <div className={styles.titleRow}>
+            <div>
+              <h1>{anime.title}</h1>
+              {anime.title_romaji && anime.title_romaji !== anime.title && (
+                <p className={styles.romaji}>{anime.title_romaji}</p>
+              )}
+            </div>
+            {isAdmin && (
+              <Link href={`/anime/${anime.id}/edit`} className={styles.editButton}>
+                Edit
+              </Link>
+            )}
+          </div>
+
+          {anime.synopsis && (
+            <>
+              <h2 className={styles.sectionTitle}>Synopsis</h2>
+              <p className={styles.synopsis}>{anime.synopsis}</p>
+            </>
+          )}
+
+          <h2 className={styles.sectionTitle}>Themes ({themes.length})</h2>
+
+          <ThemeSection title="Openings" themes={openings} animeId={anime.id} animeTitle={anime.title} />
+          <ThemeSection title="Endings" themes={endings} animeId={anime.id} animeTitle={anime.title} />
+        </div>
+      </div>
     </main>
   );
 }
@@ -41,7 +97,7 @@ export default async function AnimeDetailPage({ params }) {
 function ThemeSection({ title, themes, animeId, animeTitle }) {
   return (
     <>
-      <h2 className={styles.sectionTitle}>{title}</h2>
+      <h3 className={styles.subsectionTitle}>{title}</h3>
       {themes.length === 0 ? (
         <p className={styles.empty}>None recorded yet.</p>
       ) : (
@@ -53,8 +109,14 @@ function ThemeSection({ title, themes, animeId, animeTitle }) {
                 {t.sequence_number}
               </span>
               <span className={styles.opInfo}>
-                <span className={styles.opTitle}>{t.title}</span>
-                {t.artist && <span className={styles.opArtist}>{t.artist}</span>}
+                {t.theme_variants?.length ? (
+                  <Link href={`/watch/${t.id}`} className={styles.opTitleLink}>
+                    {t.title}
+                  </Link>
+                ) : (
+                  <span className={styles.opTitle}>{t.title}</span>
+                )}
+                {t.artist && <span className={styles.opArtist}> by {t.artist}</span>}
               </span>
               <VariantButtons theme={t} animeId={animeId} animeTitle={animeTitle} />
             </li>

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { searchAnime, searchThemes, FORMATS, SEASONS } from '@/lib/data';
+import { getSessionAndAdmin } from '@/lib/admin';
 import styles from './search.module.css';
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -31,11 +32,21 @@ export default async function SearchPage({ searchParams }) {
     themeType: sp.themeType || '',
   };
 
-  const results = type === 'anime' ? await searchAnime(filters) : await searchThemes(filters);
+  const [results, { isAdmin }] = await Promise.all([
+    type === 'anime' ? searchAnime(filters) : searchThemes(filters),
+    getSessionAndAdmin(),
+  ]);
 
   return (
     <main className={styles.main}>
-      <h1>Search</h1>
+      <div className={styles.titleRow}>
+        <h1>Search</h1>
+        {isAdmin && (
+          <Link href="/anime/new" className={styles.addButton}>
+            + Add Anime
+          </Link>
+        )}
+      </div>
 
       <div className={styles.tabs}>
         <Link
