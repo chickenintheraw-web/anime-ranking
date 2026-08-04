@@ -73,7 +73,7 @@
 
 .error {
   font-size: 13px;
-  color: var(--accent);
+  color: var(--danger);
 }
 
 .message {

@@ -1,6 +1,10 @@
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .nav {
@@ -27,9 +31,10 @@
 
 .links a {
   opacity: 0.75;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, color 0.15s;
 }
 
 .links a:hover {
   opacity: 1;
+  color: var(--accent);
 }
