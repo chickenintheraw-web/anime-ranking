@@ -6,6 +6,7 @@
   --accent: #e11d48;
   --accent-foreground: #ffffff;
   --muted: #666666;
+  --navbar-height: 64px;
 }
 
 @media (prefers-color-scheme: dark) {

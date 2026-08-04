@@ -1,0 +1,72 @@
+/* Desktop-only layout for now: the actual <video> element is rendered
+   fixed-position by the global PlayerBar (in theater mode), sized to
+   70vw. This page just reserves the remaining right-hand column for
+   info/controls so nothing overlaps it. */
+.main {
+  margin-left: 70vw;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: 32px 24px;
+}
+
+.main h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.artist {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.meta {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.meta a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.noVariants {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.variants {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.variantButton,
+.variantActive {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+.variantActive {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--accent);
+}
+
+.variantButton span,
+.variantActive span {
+  font-weight: 600;
+  opacity: 0.85;
+}
