@@ -39,6 +39,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Reserved space for the fixed PlayerBar so it never overlaps page
+     content, even though the bar itself only renders while something
+     is queued. */
+  padding-bottom: 72px;
 }
 
 * {

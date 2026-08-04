@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getAnimeWithThemes } from "@/lib/data";
+import VariantButtons from "./VariantButtons";
 import styles from "./anime-detail.module.css";
 
 function cap(s) {
@@ -31,13 +32,13 @@ export default async function AnimeDetailPage({ params }) {
           .join(" • ")}
       </p>
 
-      <ThemeSection title="Openings" themes={openings} />
-      <ThemeSection title="Endings" themes={endings} />
+      <ThemeSection title="Openings" themes={openings} animeId={anime.id} animeTitle={anime.title} />
+      <ThemeSection title="Endings" themes={endings} animeId={anime.id} animeTitle={anime.title} />
     </main>
   );
 }
 
-function ThemeSection({ title, themes }) {
+function ThemeSection({ title, themes, animeId, animeTitle }) {
   return (
     <>
       <h2 className={styles.sectionTitle}>{title}</h2>
@@ -55,6 +56,7 @@ function ThemeSection({ title, themes }) {
                 <span className={styles.opTitle}>{t.title}</span>
                 {t.artist && <span className={styles.opArtist}>{t.artist}</span>}
               </span>
+              <VariantButtons theme={t} animeId={animeId} animeTitle={animeTitle} />
             </li>
           ))}
         </ul>

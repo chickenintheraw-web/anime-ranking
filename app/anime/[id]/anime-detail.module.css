@@ -73,3 +73,36 @@
   font-size: 13px;
   color: var(--muted);
 }
+
+.variants {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.variantButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.variantButton:hover {
+  opacity: 0.85;
+}
+
+.variantSource {
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.noVariants {
+  font-size: 12px;
+  color: var(--muted);
+}
