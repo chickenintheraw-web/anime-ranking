@@ -9,6 +9,7 @@
 	},
 	"vars": {
 		"NEXT_PUBLIC_SUPABASE_URL": "https://wfeffuyhszbrezlyfruz.supabase.co",
-		"NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_P8t2cJiyJri1e__4eimXVA_bprULQm-"
+		"NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_P8t2cJiyJri1e__4eimXVA_bprULQm-",
+		"NEXT_PUBLIC_SITE_URL": "https://anime-ranking.trevor-wjones2003.workers.dev"
 	}
 }

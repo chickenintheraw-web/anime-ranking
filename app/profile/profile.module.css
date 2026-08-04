@@ -1,0 +1,54 @@
+.main {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+.main h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.email {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.links {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.link {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: var(--surface);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.link:hover {
+  border-color: var(--accent);
+}
+
+.signOut {
+  margin-top: 32px;
+  height: 40px;
+  padding: 0 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  background: transparent;
+  color: var(--foreground);
+}
+
+.signOut:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

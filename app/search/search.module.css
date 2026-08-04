@@ -1,0 +1,137 @@
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+.main h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.tabs {
+  margin-top: 24px;
+  display: flex;
+  gap: 8px;
+}
+
+.tab,
+.tabActive {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+.tab {
+  color: var(--muted);
+}
+
+.tabActive {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--accent);
+}
+
+.filters {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filters select,
+.filters input {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 13px;
+}
+
+.search {
+  flex: 1 1 220px;
+}
+
+.year {
+  width: 90px;
+}
+
+.applyButton {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.empty {
+  margin-top: 32px;
+  color: var(--muted);
+}
+
+.results {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: 10px 14px;
+}
+
+.thumb {
+  width: 40px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbFallback {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.rowInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rowTitle {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--accent);
+}
+
+.rowMeta {
+  font-size: 13px;
+  color: var(--muted);
+}

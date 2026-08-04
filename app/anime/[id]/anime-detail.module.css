@@ -73,9 +73,3 @@
   font-size: 13px;
   color: var(--muted);
 }
-
-.opRating {
-  font-size: 13px;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
