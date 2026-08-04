@@ -1,0 +1,357 @@
+/* Desktop-only layout for now, matching the rest of the site. */
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+.main h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.subtitle {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.layout {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* Search panel (left) */
+.searchPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.searchInput {
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  font: inherit;
+}
+
+.resultsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  max-height: 640px;
+  overflow-y: auto;
+}
+
+.result,
+.resultRanked {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.result:hover {
+  border-color: var(--accent);
+}
+
+.resultRanked {
+  background: var(--ranked-bg);
+  border-color: var(--ranked-border);
+}
+
+.rankBadge {
+  flex-shrink: 0;
+  min-width: 26px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--ranked-border);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.resultInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.resultTitle {
+  font-weight: 600;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resultMeta {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ranking panel (right) */
+.rankingPanel {
+  position: sticky;
+  top: 24px;
+}
+
+.rankingHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.rankingHeader h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.saving {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.rankingList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.rankingItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: var(--surface);
+}
+
+.placement {
+  min-width: 24px;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.rankingInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rankingTitle {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rankingMeta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.removeButton {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.removeButton:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Placement modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+}
+
+.modalClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  color: var(--muted);
+}
+
+.modalClose:hover {
+  color: var(--accent);
+}
+
+.modalHint {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.compareRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.compareSlot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.compareLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.compareLabelCandidate {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.videoTile {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.videoEl {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  border-radius: 8px;
+  background: #000;
+}
+
+.noPreview {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 12px;
+  background: var(--surface);
+  border-radius: 8px;
+}
+
+.emptySlot {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.videoCaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.videoTitle {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.videoMeta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.modalActions {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.modalButton {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.modalButton:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.modalButton:disabled {
+  opacity: 0.4;
+}
+
+.modalConfirm {
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-weight: 700;
+  font-size: 14px;
+}
