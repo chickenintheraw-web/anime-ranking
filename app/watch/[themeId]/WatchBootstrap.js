@@ -17,7 +17,9 @@ export default function WatchBootstrap({ theme }) {
     play({
       id: variant.id,
       themeId: theme.id,
+      provider: variant.provider,
       url: variant.url,
+      youtubeId: variant.youtube_id,
       title: theme.title,
       artist: theme.artist,
       animeId: theme.anime.id,

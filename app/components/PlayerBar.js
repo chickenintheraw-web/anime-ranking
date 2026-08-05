@@ -4,17 +4,18 @@ import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { usePlayer } from './PlayerContext';
+import MediaPlayer from './MediaPlayer';
 import styles from './PlayerBar.module.css';
 
 export default function PlayerBar() {
   const { current, index, queue, isPlaying, setIsPlaying, next, prev, close } = usePlayer();
-  const videoRef = useRef(null);
+  const mediaRef = useRef(null);
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!videoRef.current) return;
-    if (isPlaying) videoRef.current.play().catch(() => {});
-    else videoRef.current.pause();
+    if (!mediaRef.current) return;
+    if (isPlaying) mediaRef.current.play();
+    else mediaRef.current.pause();
   }, [isPlaying, current]);
 
   if (!current) return null;
@@ -23,9 +24,11 @@ export default function PlayerBar() {
 
   return (
     <div className={isTheater ? styles.theaterWrap : styles.bar}>
-      <video
-        ref={videoRef}
-        src={current.url}
+      <MediaPlayer
+        ref={mediaRef}
+        provider={current.provider}
+        url={current.url}
+        youtubeId={current.youtubeId}
         className={isTheater ? styles.theaterVideo : styles.video}
         autoPlay
         controls={isTheater}
@@ -49,6 +52,7 @@ export default function PlayerBar() {
               ) : (
                 ` · ${current.animeTitle}`
               )}
+              {current.provider === 'youtube' ? ' · YouTube' : ''}
               {current.quality ? ` · ${current.quality} ${current.source}` : ''}
             </span>
           </div>

@@ -16,7 +16,9 @@ export default function VariantButtons({ theme, animeId, animeTitle }) {
     play({
       id: v.id,
       themeId: theme.id,
+      provider: v.provider,
       url: v.url,
+      youtubeId: v.youtube_id,
       title: theme.title,
       artist: theme.artist,
       animeId,
@@ -31,16 +33,27 @@ export default function VariantButtons({ theme, animeId, animeTitle }) {
 
   return (
     <span className={styles.variants}>
-      {theme.theme_variants.map((v) => (
-        <button
-          key={v.id}
-          type="button"
-          className={styles.variantButton}
-          onClick={() => handleClick(v)}
-        >
-          {v.quality} <span className={styles.variantSource}>{v.source}</span>
-        </button>
-      ))}
+      {theme.theme_variants.map((v) =>
+        v.provider === 'youtube' ? (
+          <button
+            key={v.id}
+            type="button"
+            className={styles.variantYoutube}
+            onClick={() => handleClick(v)}
+          >
+            YouTube
+          </button>
+        ) : (
+          <button
+            key={v.id}
+            type="button"
+            className={styles.variantButton}
+            onClick={() => handleClick(v)}
+          >
+            {v.quality} <span className={styles.variantSource}>{v.source}</span>
+          </button>
+        )
+      )}
     </span>
   );
 }

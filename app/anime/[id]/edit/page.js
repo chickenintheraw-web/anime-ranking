@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { requireAdmin } from '@/lib/admin';
 import { getAnimeWithThemes, FORMATS, SEASONS } from '@/lib/data';
-import { updateAnime, createTheme, updateTheme } from './actions';
+import { updateAnime, createTheme, updateTheme, addYoutubeVariant, removeVariant } from './actions';
 import styles from '../../admin-form.module.css';
 
 export default async function EditAnimePage({ params }) {
@@ -88,56 +88,106 @@ function ThemeList({ themes, animeId }) {
   return (
     <div className={styles.themeList}>
       {themes.map((t) => (
-        <form key={t.id} action={updateTheme} className={styles.themeForm}>
-          <input type="hidden" name="theme_id" value={t.id} />
+        <div key={t.id} className={styles.themeItem}>
+          <form action={updateTheme} className={styles.themeForm}>
+            <input type="hidden" name="theme_id" value={t.id} />
+            <input type="hidden" name="anime_id" value={animeId} />
+            <input type="hidden" name="theme_type" value={t.theme_type} />
+            <input
+              type="text"
+              name="title"
+              defaultValue={t.title}
+              className={styles.themeInput}
+              placeholder="Title"
+              required
+            />
+            <input
+              type="text"
+              name="artist"
+              defaultValue={t.artist || ''}
+              className={styles.themeInput}
+              placeholder="Artist"
+            />
+            <input
+              type="number"
+              name="sequence_number"
+              defaultValue={t.sequence_number}
+              className={styles.themeInputSmall}
+              placeholder="#"
+            />
+            <select
+              name="release_season"
+              defaultValue={t.release_season || ''}
+              className={styles.themeSelect}
+            >
+              <option value="">Season —</option>
+              {SEASONS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              name="release_year"
+              defaultValue={t.release_year || ''}
+              className={styles.themeInputSmall}
+              placeholder="Year"
+            />
+            <button type="submit" className={styles.themeSave}>
+              Save
+            </button>
+          </form>
+          <VariantsRow theme={t} animeId={animeId} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function VariantsRow({ theme, animeId }) {
+  const youtubeVariant = theme.theme_variants?.find((v) => v.provider === 'youtube');
+  const r2Variants = theme.theme_variants?.filter((v) => v.provider !== 'youtube') ?? [];
+
+  return (
+    <div className={styles.variantsRow}>
+      {r2Variants.map((v) => (
+        <form key={v.id} action={removeVariant} className={styles.variantChip}>
+          <input type="hidden" name="variant_id" value={v.id} />
           <input type="hidden" name="anime_id" value={animeId} />
-          <input type="hidden" name="theme_type" value={t.theme_type} />
-          <input
-            type="text"
-            name="title"
-            defaultValue={t.title}
-            className={styles.themeInput}
-            placeholder="Title"
-            required
-          />
-          <input
-            type="text"
-            name="artist"
-            defaultValue={t.artist || ''}
-            className={styles.themeInput}
-            placeholder="Artist"
-          />
-          <input
-            type="number"
-            name="sequence_number"
-            defaultValue={t.sequence_number}
-            className={styles.themeInputSmall}
-            placeholder="#"
-          />
-          <select
-            name="release_season"
-            defaultValue={t.release_season || ''}
-            className={styles.themeSelect}
-          >
-            <option value="">Season —</option>
-            {SEASONS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-          <input
-            type="number"
-            name="release_year"
-            defaultValue={t.release_year || ''}
-            className={styles.themeInputSmall}
-            placeholder="Year"
-          />
-          <button type="submit" className={styles.themeSave}>
-            Save
+          <span>
+            {v.quality} {v.source}
+          </span>
+          <button type="submit" className={styles.removeVariantButton} aria-label="Remove variant">
+            ✕
           </button>
         </form>
       ))}
+
+      {youtubeVariant ? (
+        <form action={removeVariant} className={styles.variantChipYoutube}>
+          <input type="hidden" name="variant_id" value={youtubeVariant.id} />
+          <input type="hidden" name="anime_id" value={animeId} />
+          <span>YouTube: {youtubeVariant.youtube_id}</span>
+          <button type="submit" className={styles.removeVariantButton} aria-label="Remove YouTube link">
+            ✕
+          </button>
+        </form>
+      ) : (
+        <form action={addYoutubeVariant} className={styles.addYoutubeForm}>
+          <input type="hidden" name="theme_id" value={theme.id} />
+          <input type="hidden" name="anime_id" value={animeId} />
+          <input
+            type="text"
+            name="youtube_url"
+            className={styles.addYoutubeInput}
+            placeholder="Paste YouTube URL"
+          />
+          <button type="submit" className={styles.addYoutubeButton}>
+            Add YouTube link
+          </button>
+        </form>
+      )}
     </div>
   );
 }

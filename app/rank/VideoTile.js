@@ -1,37 +1,41 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import MediaPlayer from '@/app/components/MediaPlayer';
 import styles from './theme-rank.module.css';
 
 // All three comparison videos autoplay muted simultaneously; hovering one
 // unmutes just that one so the user can compare audio by moving their
 // mouse between tiles, without ever stopping playback.
 export default function VideoTile({ track }) {
-  const videoRef = useRef(null);
+  const mediaRef = useRef(null);
 
   useEffect(() => {
-    if (videoRef.current) videoRef.current.muted = true;
+    mediaRef.current?.setMuted(true);
   }, []);
 
   function handleEnter() {
-    if (videoRef.current) videoRef.current.muted = false;
+    mediaRef.current?.setMuted(false);
   }
 
   function handleLeave() {
-    if (videoRef.current) videoRef.current.muted = true;
+    mediaRef.current?.setMuted(true);
   }
+
+  const hasVideo = track.provider === 'youtube' ? !!track.youtubeId : !!track.previewUrl;
 
   return (
     <div className={styles.videoTile} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
-      {track.previewUrl ? (
-        <video
-          ref={videoRef}
-          src={track.previewUrl}
+      {hasVideo ? (
+        <MediaPlayer
+          ref={mediaRef}
+          provider={track.provider}
+          url={track.previewUrl}
+          youtubeId={track.youtubeId}
           className={styles.videoEl}
           autoPlay
           loop
           muted
-          playsInline
         />
       ) : (
         <div className={styles.noPreview}>No video</div>
