@@ -1,8 +1,11 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { requireAdmin } from '@/lib/admin';
 import { extractYoutubeId } from '@/lib/youtube';
+
+const R2_PUBLIC_BASE = 'https://pub-09be9ff2325342919e86ae0735f464d7.r2.dev';
 
 function animeFieldsFrom(formData) {
   return {
@@ -104,8 +107,22 @@ export async function removeVariant(formData) {
   const variantId = formData.get('variant_id');
   const animeId = formData.get('anime_id');
 
+  // Look up the file before deleting the row - an R2-hosted variant's
+  // underlying object would otherwise just sit in the bucket forever.
+  const { data: variant } = await supabase
+    .from('theme_variants')
+    .select('provider, url')
+    .eq('id', variantId)
+    .maybeSingle();
+
   const { error } = await supabase.from('theme_variants').delete().eq('id', variantId);
   if (error) throw new Error(error.message);
+
+  if (variant?.provider === 'r2' && variant.url?.startsWith(`${R2_PUBLIC_BASE}/`)) {
+    const key = variant.url.slice(R2_PUBLIC_BASE.length + 1);
+    const { env } = await getCloudflareContext({ async: true });
+    await env.VIDEOS.delete(key).catch(() => {});
+  }
 
   revalidatePath(`/anime/${animeId}`);
   revalidatePath(`/anime/${animeId}/edit`);

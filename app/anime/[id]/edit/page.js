@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { requireAdmin } from '@/lib/admin';
 import { getAnimeWithThemes, FORMATS, SEASONS } from '@/lib/data';
 import { updateAnime, createTheme, updateTheme, addYoutubeVariant, removeVariant } from './actions';
+import VariantUpload from './VariantUpload';
 import styles from '../../admin-form.module.css';
 
 export default async function EditAnimePage({ params }) {
@@ -151,6 +152,8 @@ function VariantsRow({ theme, animeId }) {
 
   return (
     <div className={styles.variantsRow}>
+      <VariantUpload themeId={theme.id} animeId={animeId} />
+
       {r2Variants.map((v) => (
         <form key={v.id} action={removeVariant} className={styles.variantChip}>
           <input type="hidden" name="variant_id" value={v.id} />
