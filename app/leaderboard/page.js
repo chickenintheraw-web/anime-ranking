@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { getAnimeLeaderboard, getThemeLeaderboard } from "@/lib/data";
+import LeaderboardShell from "./LeaderboardShell";
+import LeaderboardThemeRow from "./LeaderboardThemeRow";
 import styles from "./leaderboard.module.css";
 
 const TABS = [
@@ -18,7 +20,7 @@ export default async function LeaderboardPage({ searchParams }) {
       : await getThemeLeaderboard(type === "opening" ? "OP" : "ED");
 
   return (
-    <main className={styles.main}>
+    <LeaderboardShell>
       <h1>Leaderboard</h1>
       <p className={styles.subtitle}>
         The pooled global ranking, built from every ranked list submitted on
@@ -59,25 +61,10 @@ export default async function LeaderboardPage({ searchParams }) {
                 </li>
               ))
             : rows.map((row, i) => (
-                <li key={row.theme_id} className={styles.item}>
-                  <span className={styles.rank}>{i + 1}</span>
-                  <span className={styles.info}>
-                    <span className={styles.title}>{row.theme_title}</span>
-                    <span className={styles.animeTitle}>
-                      <Link href={`/anime/${row.anime_id}`}>{row.anime_title}</Link>
-                      {row.artist ? ` • ${row.artist}` : ""}
-                    </span>
-                  </span>
-                  <span className={styles.stats}>
-                    <span className={styles.avg}>{row.avg_placement}</span>
-                    <span className={styles.voteCount}>
-                      {row.vote_count} vote{row.vote_count === 1 ? "" : "s"}
-                    </span>
-                  </span>
-                </li>
+                <LeaderboardThemeRow key={row.theme_id} row={row} rank={i + 1} />
               ))}
         </ol>
       )}
-    </main>
+    </LeaderboardShell>
   );
 }

@@ -111,3 +111,53 @@
   object-fit: contain;
   background: #000;
 }
+
+.leaderboardWrap {
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  z-index: 40;
+  width: 400px;
+  height: calc(100vh - var(--navbar-height));
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.leaderboardVideo {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #000;
+  flex-shrink: 0;
+}
+
+.leaderboardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  min-width: 0;
+}
+
+.leaderboardControls {
+  padding: 0 16px 16px;
+}
+
+.leaderboardClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.leaderboardClose:hover {
+  color: var(--accent);
+}

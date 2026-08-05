@@ -4,6 +4,16 @@
   padding: 48px 24px 96px;
 }
 
+/* Applied instead of .main whenever a theme is playing - the video itself
+   is the global PlayerBar, fixed to the viewport's left edge on this
+   route (see PlayerBar.module.css's .leaderboardWrap); this just shifts
+   the list out from underneath it. */
+.mainWithPlayer {
+  max-width: 720px;
+  margin-left: 432px;
+  padding: 48px 24px 96px;
+}
+
 .main h1 {
   font-size: 32px;
   font-weight: 700;
@@ -69,6 +79,19 @@
   border-bottom: none;
 }
 
+.itemActive {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--ranked-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.itemActive:last-child {
+  border-bottom: none;
+}
+
 .rank {
   min-width: 28px;
   font-weight: 700;
@@ -86,6 +109,24 @@
 .title {
   font-weight: 600;
   font-size: 15px;
+}
+
+.titleButton {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--accent);
+}
+
+.titleButton:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .animeTitle {
