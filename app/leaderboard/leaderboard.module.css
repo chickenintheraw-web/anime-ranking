@@ -6,21 +6,23 @@
 
 /* Combined with .main (not a replacement for it, so .main's own child
    selectors like ".main h1" below still apply) whenever a theme is
-   playing - the video itself is the global PlayerBar, fixed to the
-   viewport's left edge on this route (see PlayerBar.module.css's
-   .leaderboardWrap); this just shifts the list out from underneath it,
-   growing/shrinking with it since both reference the same CSS variable.
-   Below the same 1024px breakpoint where the player becomes a bottom
-   overlay instead of a left column, this resets to plain centered .main. */
+   playing - the video card itself is the global PlayerBar, floating at
+   the viewport's left edge on this route (see PlayerBar.module.css's
+   .leaderboardWrap). This keeps the list its own separate, bounded box
+   clear of the card rather than stretching it flush against it - a
+   fixed gap past the card's width, which still grows/shrinks with it
+   since both reference the same CSS variable. Below the same 1024px
+   breakpoint where the player becomes a bottom overlay instead of a
+   left column, this resets to plain centered .main. */
 .mainWithPlayer {
-  max-width: none;
-  margin-left: var(--leaderboard-player-width);
+  margin-left: calc(24px + var(--leaderboard-player-width) + 48px);
+  margin-right: 48px;
 }
 
 @media (max-width: 1024px) {
   .mainWithPlayer {
     max-width: 720px;
-    margin-left: auto;
+    margin: 0 auto;
   }
 }
 

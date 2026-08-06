@@ -112,18 +112,25 @@
   background: #000;
 }
 
+/* A self-contained floating card, not a full-height column - sized to its
+   content (video + info + controls) and vertically centered in the space
+   below the navbar, so it reads as one distinct box rather than a panel
+   fused to the leaderboard next to it. */
 .leaderboardWrap {
   position: fixed;
-  top: var(--navbar-height);
-  left: 0;
+  top: calc(var(--navbar-height) + (100vh - var(--navbar-height)) / 2);
+  left: 24px;
+  transform: translateY(-50%);
   z-index: 40;
   width: var(--leaderboard-player-width);
-  height: calc(100vh - var(--navbar-height));
+  max-height: calc(100vh - var(--navbar-height) - 48px);
   background: var(--surface);
-  border-right: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden auto;
 }
 
 .leaderboardVideo {
@@ -134,7 +141,7 @@
   flex-shrink: 0;
 }
 
-/* Below this, the video column and the remaining list space both get too
+/* Below this, the video card and the remaining list space both get too
    narrow to be usable side by side - switch to a fixed overlay covering
    the bottom half of the viewport instead, floating over whatever part of
    the (now full-width) list happens to be scrolled underneath it. */
@@ -143,10 +150,13 @@
     top: auto;
     bottom: 0;
     left: 0;
-    right: 0;
+    transform: none;
+    z-index: 40;
     width: 100%;
+    max-height: none;
     height: 50vh;
-    border-right: none;
+    border: none;
+    border-radius: 0;
     border-top: 1px solid var(--border);
     box-shadow: var(--shadow);
   }
