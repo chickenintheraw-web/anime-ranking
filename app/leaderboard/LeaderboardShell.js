@@ -11,7 +11,7 @@ export default function LeaderboardShell({ children }) {
   const { current } = usePlayer();
   return (
     <main className={current ? `${styles.main} ${styles.mainWithPlayer}` : styles.main}>
-      {children}
+      <div className={styles.content}>{children}</div>
     </main>
   );
 }

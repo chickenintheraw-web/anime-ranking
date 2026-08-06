@@ -8,22 +8,38 @@
    selectors like ".main h1" below still apply) whenever a theme is
    playing - the video card itself is the global PlayerBar, floating at
    the viewport's left edge on this route (see PlayerBar.module.css's
-   .leaderboardWrap). This keeps the list its own separate, bounded box
-   clear of the card rather than stretching it flush against it - a
-   fixed gap past the card's width, which still grows/shrinks with it
-   since both reference the same CSS variable. Below the same 1024px
-   breakpoint where the player becomes a bottom overlay instead of a
-   left column, this resets to plain centered .main. */
+   .leaderboardWrap). margin-left reserves the mandatory clearance past
+   the card (grows/shrinks with it since both reference the same CSS
+   variable); turning this into a flex row and pushing .content to its
+   end edge is what actually puts the list over on the right side of the
+   remaining space, rather than just leaving it flush after the card with
+   dead space beyond it. Below the same 1024px breakpoint where the
+   player becomes a bottom overlay instead of a left column, this resets
+   to plain centered .main. */
 .mainWithPlayer {
+  max-width: none;
   margin-left: calc(24px + var(--leaderboard-player-width) + 48px);
-  margin-right: 48px;
+  margin-right: 0;
+  display: flex;
+  justify-content: flex-end;
 }
 
 @media (max-width: 1024px) {
   .mainWithPlayer {
+    display: block;
     max-width: 720px;
     margin: 0 auto;
   }
+}
+
+/* A flex item with width:100% claims the entire row as its flex-basis,
+   leaving no slack for .mainWithPlayer's justify-content:flex-end to push
+   against - a fixed width (that can still shrink on narrow containers,
+   via the default flex-shrink:1) is what actually leaves free space on
+   the left for the flex-end alignment to use. */
+.content {
+  width: 720px;
+  max-width: 100%;
 }
 
 .main h1 {
