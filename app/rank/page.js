@@ -33,6 +33,21 @@ export default async function RankPage() {
             <span className={styles.chooserTitle}>Rank Endings</span>
             <span className={styles.chooserDesc}>Order your favorite ending themes.</span>
           </Link>
+          <Link href="/rank/season" className={styles.chooserCard}>
+            <span className={styles.chooserTitle}>Rank Seasons</span>
+            <span className={styles.chooserDesc}>Order full seasons against each other.</span>
+          </Link>
+          <Link href="/rank/movie" className={styles.chooserCard}>
+            <span className={styles.chooserTitle}>Rank Movies</span>
+            <span className={styles.chooserDesc}>Order the movies you&apos;ve watched.</span>
+          </Link>
+          <Link href="/rank/episode" className={styles.chooserCard}>
+            <span className={styles.chooserTitle}>Rank Episodes</span>
+            <span className={styles.chooserDesc}>
+              Build a global episode ranking across every show. To rank just
+              one show&apos;s episodes, use that show&apos;s own page instead.
+            </span>
+          </Link>
         </div>
       )}
     </main>

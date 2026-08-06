@@ -1,23 +1,88 @@
 import Link from "next/link";
-import { getAnimeLeaderboard, getThemeLeaderboard } from "@/lib/data";
+import {
+  getAnimeLeaderboard,
+  getThemeLeaderboard,
+  getSeasonLeaderboard,
+  getMovieLeaderboard,
+  getEpisodeLeaderboard,
+} from "@/lib/data";
 import LeaderboardShell from "./LeaderboardShell";
+import LeaderboardSimpleRow from "./LeaderboardSimpleRow";
 import LeaderboardThemeRow from "./LeaderboardThemeRow";
+import LeaderboardEpisodeRow from "./LeaderboardEpisodeRow";
 import styles from "./leaderboard.module.css";
 
 const TABS = [
   { type: "anime", label: "Anime" },
   { type: "opening", label: "Openings" },
   { type: "ending", label: "Endings" },
+  { type: "season", label: "Seasons" },
+  { type: "movie", label: "Movies" },
+  { type: "episode", label: "Episodes" },
 ];
+
+const TAB_CONFIG = {
+  anime: {
+    fetch: () => getAnimeLeaderboard(),
+    keyOf: (r) => r.anime_id,
+    Row: LeaderboardSimpleRow,
+    toRow: (r) => ({
+      href: `/anime/${r.anime_id}`,
+      title: r.title,
+      subtitle: null,
+      avg: r.avg_placement,
+      count: r.vote_count,
+    }),
+  },
+  season: {
+    fetch: () => getSeasonLeaderboard(),
+    keyOf: (r) => r.season_id,
+    Row: LeaderboardSimpleRow,
+    toRow: (r) => ({
+      href: `/anime/${r.anime_id}`,
+      title: r.season_title || `Season ${r.season_number}`,
+      subtitle: r.anime_title,
+      avg: r.avg_placement,
+      count: r.vote_count,
+    }),
+  },
+  movie: {
+    fetch: () => getMovieLeaderboard(),
+    keyOf: (r) => r.movie_id,
+    Row: LeaderboardSimpleRow,
+    toRow: (r) => ({
+      href: `/anime/${r.anime_id}`,
+      title: r.title,
+      subtitle: r.anime_title,
+      avg: r.avg_placement,
+      count: r.vote_count,
+    }),
+  },
+  opening: {
+    fetch: () => getThemeLeaderboard("OP"),
+    keyOf: (r) => r.theme_id,
+    Row: LeaderboardThemeRow,
+    toRow: (r) => r,
+  },
+  ending: {
+    fetch: () => getThemeLeaderboard("ED"),
+    keyOf: (r) => r.theme_id,
+    Row: LeaderboardThemeRow,
+    toRow: (r) => r,
+  },
+  episode: {
+    fetch: () => getEpisodeLeaderboard(),
+    keyOf: (r) => r.episode_id,
+    Row: LeaderboardEpisodeRow,
+    toRow: (r) => r,
+  },
+};
 
 export default async function LeaderboardPage({ searchParams }) {
   const sp = await searchParams;
   const type = TABS.some((t) => t.type === sp.type) ? sp.type : "anime";
-
-  const rows =
-    type === "anime"
-      ? await getAnimeLeaderboard()
-      : await getThemeLeaderboard(type === "opening" ? "OP" : "ED");
+  const config = TAB_CONFIG[type];
+  const rows = await config.fetch();
 
   return (
     <LeaderboardShell>
@@ -43,26 +108,9 @@ export default async function LeaderboardPage({ searchParams }) {
         <p className={styles.empty}>No votes yet — be the first to rank.</p>
       ) : (
         <ol className={styles.list}>
-          {type === "anime"
-            ? rows.map((row, i) => (
-                <li key={row.anime_id} className={styles.item}>
-                  <span className={styles.rank}>{i + 1}</span>
-                  <span className={styles.info}>
-                    <Link href={`/anime/${row.anime_id}`} className={styles.title}>
-                      {row.title}
-                    </Link>
-                  </span>
-                  <span className={styles.stats}>
-                    <span className={styles.avg}>{row.avg_placement}</span>
-                    <span className={styles.voteCount}>
-                      {row.vote_count} vote{row.vote_count === 1 ? "" : "s"}
-                    </span>
-                  </span>
-                </li>
-              ))
-            : rows.map((row, i) => (
-                <LeaderboardThemeRow key={row.theme_id} row={row} rank={i + 1} />
-              ))}
+          {rows.map((row, i) => (
+            <config.Row key={config.keyOf(row)} row={config.toRow(row)} rank={i + 1} />
+          ))}
         </ol>
       )}
     </LeaderboardShell>

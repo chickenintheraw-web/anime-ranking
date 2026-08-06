@@ -29,6 +29,8 @@ function themeFieldsFrom(formData) {
       : 1,
     release_season: formData.get('release_season')?.toString() || null,
     release_year: formData.get('release_year') ? Number(formData.get('release_year')) : null,
+    season_id: formData.get('season_id')?.toString() || null,
+    movie_id: formData.get('movie_id')?.toString() || null,
   };
 }
 

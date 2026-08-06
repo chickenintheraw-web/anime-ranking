@@ -232,3 +232,23 @@
   font-size: 12px;
   color: var(--muted);
 }
+
+.seasonBlock {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.episodeListCompact {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.episodeListCompact .item {
+  padding: 8px 12px;
+}

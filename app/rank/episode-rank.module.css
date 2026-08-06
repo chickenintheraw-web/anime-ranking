@@ -1,0 +1,493 @@
+/* Desktop-only layout for now, matching the rest of the site. Clone of
+   theme-rank.module.css with the video-specific classes swapped for
+   thumbnail/text ones (episodes have no hosted video) and a "By Show"
+   panel added. */
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+.main h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.subtitle {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.layout {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* Search panel (left) */
+.searchPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.leftTabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.leftTab,
+.leftTabActive {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+}
+
+.leftTab {
+  color: var(--muted);
+}
+
+.leftTabActive {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--accent);
+}
+
+.searchInput {
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  font: inherit;
+}
+
+.resultsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  max-height: 640px;
+  overflow-y: auto;
+}
+
+.result,
+.resultRanked {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.result:hover {
+  border-color: var(--accent);
+}
+
+.resultSelecting {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--surface);
+}
+
+.resultRanked {
+  background: var(--ranked-bg);
+  border-color: var(--ranked-border);
+}
+
+.rankBadge {
+  flex-shrink: 0;
+  min-width: 26px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--ranked-border);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.resultInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rowStats {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rowRank {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.rowAvg {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.resultTitle {
+  font-weight: 600;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resultMeta {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "By Show" panel — solo-ranked shows, pre-sorted, click to place into
+   the global list. */
+.byShowGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 640px;
+  overflow-y: auto;
+}
+
+.byShowGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.byShowTitle {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Ranking panel (right) */
+.rankingPanel {
+  position: sticky;
+  top: 24px;
+}
+
+.rankingHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.rankingHeader h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.saving {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.selectingBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--ranked-bg);
+  border: 1px solid var(--ranked-border);
+  font-size: 13px;
+}
+
+.selectingBanner strong {
+  font-weight: 700;
+}
+
+.cancelLink {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px dashed var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.slot:hover {
+  background: var(--ranked-bg);
+}
+
+.rankingList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.rankingItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: var(--surface);
+}
+
+.placement {
+  min-width: 24px;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.rankingInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rankingTitle {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rankingMeta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.removeButton {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.removeButton:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Placement modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+}
+
+.modalClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  color: var(--muted);
+}
+
+.modalClose:hover {
+  color: var(--accent);
+}
+
+.modalHint {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.compareRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.compareSlot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.compareLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.compareLabelCandidate {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.episodeTile {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.episodeThumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.episodeThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.episodeThumbFallback {
+  padding: 0 12px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.emptySlot {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.episodeCaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.episodeTitle {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.episodeMeta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.modalActions {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.modalButtonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modalButton {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.modalButton:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.modalButton:disabled {
+  opacity: 0.4;
+}
+
+.modalConfirm {
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-weight: 700;
+  font-size: 14px;
+}
