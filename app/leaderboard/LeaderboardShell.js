@@ -9,5 +9,9 @@ import styles from './leaderboard.module.css';
 // space so the list doesn't sit underneath it, same trick /watch uses.
 export default function LeaderboardShell({ children }) {
   const { current } = usePlayer();
-  return <main className={current ? styles.mainWithPlayer : styles.main}>{children}</main>;
+  return (
+    <main className={current ? `${styles.main} ${styles.mainWithPlayer}` : styles.main}>
+      {children}
+    </main>
+  );
 }

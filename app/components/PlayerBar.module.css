@@ -117,7 +117,7 @@
   top: var(--navbar-height);
   left: 0;
   z-index: 40;
-  width: 400px;
+  width: var(--leaderboard-player-width);
   height: calc(100vh - var(--navbar-height));
   background: var(--surface);
   border-right: 1px solid var(--border);
@@ -132,6 +132,31 @@
   object-fit: contain;
   background: #000;
   flex-shrink: 0;
+}
+
+/* Below this, the video column and the remaining list space both get too
+   narrow to be usable side by side - switch to a fixed overlay covering
+   the bottom half of the viewport instead, floating over whatever part of
+   the (now full-width) list happens to be scrolled underneath it. */
+@media (max-width: 1024px) {
+  .leaderboardWrap {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 50vh;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .leaderboardVideo {
+    width: auto;
+    height: 60%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
 }
 
 .leaderboardInfo {

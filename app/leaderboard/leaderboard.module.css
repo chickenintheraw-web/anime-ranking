@@ -4,14 +4,24 @@
   padding: 48px 24px 96px;
 }
 
-/* Applied instead of .main whenever a theme is playing - the video itself
-   is the global PlayerBar, fixed to the viewport's left edge on this
-   route (see PlayerBar.module.css's .leaderboardWrap); this just shifts
-   the list out from underneath it. */
+/* Combined with .main (not a replacement for it, so .main's own child
+   selectors like ".main h1" below still apply) whenever a theme is
+   playing - the video itself is the global PlayerBar, fixed to the
+   viewport's left edge on this route (see PlayerBar.module.css's
+   .leaderboardWrap); this just shifts the list out from underneath it,
+   growing/shrinking with it since both reference the same CSS variable.
+   Below the same 1024px breakpoint where the player becomes a bottom
+   overlay instead of a left column, this resets to plain centered .main. */
 .mainWithPlayer {
-  max-width: 720px;
-  margin-left: 432px;
-  padding: 48px 24px 96px;
+  max-width: none;
+  margin-left: var(--leaderboard-player-width);
+}
+
+@media (max-width: 1024px) {
+  .mainWithPlayer {
+    max-width: 720px;
+    margin-left: auto;
+  }
 }
 
 .main h1 {
