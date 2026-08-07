@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getAnimeWithThemes, getAnimeSeasons, getAnimeMovies, getAnimeEpisodes } from "@/lib/data";
 import { getSessionAndAdmin } from "@/lib/admin";
 import VariantButtons from "./VariantButtons";
+import AnimeTabs from "./AnimeTabs";
 import styles from "./anime-detail.module.css";
 
 function cap(s) {
@@ -35,7 +36,8 @@ export default async function AnimeDetailPage({ params }) {
     if (a.theme_type !== b.theme_type) return a.theme_type === "OP" ? -1 : 1;
     return a.sequence_number - b.sequence_number;
   });
-  const generalThemes = themes.filter((t) => !t.season_id && !t.movie_id);
+  const generalOpenings = themes.filter((t) => !t.season_id && !t.movie_id && t.theme_type === "OP");
+  const generalEndings = themes.filter((t) => !t.season_id && !t.movie_id && t.theme_type === "ED");
   const themesBySeasonId = groupBy(
     themes.filter((t) => t.season_id),
     "season_id"
@@ -75,6 +77,92 @@ export default async function AnimeDetailPage({ params }) {
         .filter(Boolean);
     }
   }
+
+  // Seasons and movies interleaved by release year, so a movie that came
+  // out between two seasons (Jujutsu Kaisen 0 between JJK S1 and S2) shows
+  // up in its actual chronological spot rather than in a separate block.
+  // Entries with no year go last, since we don't know when they released.
+  const timeline = [
+    ...seasons.map((s) => ({ kind: "season", year: s.year ?? Infinity, data: s })),
+    ...movies.map((m) => ({ kind: "movie", year: m.year ?? Infinity, data: m })),
+  ].sort((a, b) => a.year - b.year);
+
+  const episodesTab = (
+    <>
+      {seasons.length > 0
+        ? timeline.map((entry) =>
+            entry.kind === "season" ? (
+              <SeasonEpisodesBlock
+                key={`s-${entry.data.id}`}
+                season={entry.data}
+                episodes={episodesBySeasonId.get(entry.data.id) ?? []}
+              />
+            ) : (
+              <MovieSummaryBlock key={`m-${entry.data.id}`} movie={entry.data} />
+            )
+          )
+        : episodes.length > 0 && <EpisodeListBlock episodes={episodes} />}
+
+      {seasons.length > 0 && unsectionedEpisodes.length > 0 && (
+        <EpisodeListBlock title="Other Episodes" episodes={unsectionedEpisodes} />
+      )}
+      {seasons.length === 0 && movies.map((m) => <MovieSummaryBlock key={m.id} movie={m} />)}
+
+      {episodes.length === 0 && movies.length === 0 && (
+        <p className={styles.empty}>No episodes recorded yet.</p>
+      )}
+
+      {user && episodes.length > 0 && (
+        <EpisodeRankingSection ranking={episodeRanking} animeId={anime.id} />
+      )}
+    </>
+  );
+
+  const themesTab = (
+    <>
+      <ThemeSection title="Openings" themes={generalOpenings} animeId={anime.id} animeTitle={anime.title} />
+      <ThemeSection title="Endings" themes={generalEndings} animeId={anime.id} animeTitle={anime.title} />
+
+      {seasons.map((s) => {
+        const label = s.title || `Season ${s.season_number}`;
+        return (
+          <div key={s.id} className={styles.seasonBlock}>
+            <h3 className={styles.subsectionTitle}>{label}</h3>
+            <ThemeSection
+              title={`${label} Openings`}
+              themes={(themesBySeasonId.get(s.id) ?? []).filter((t) => t.theme_type === "OP")}
+              animeId={anime.id}
+              animeTitle={anime.title}
+            />
+            <ThemeSection
+              title={`${label} Endings`}
+              themes={(themesBySeasonId.get(s.id) ?? []).filter((t) => t.theme_type === "ED")}
+              animeId={anime.id}
+              animeTitle={anime.title}
+            />
+          </div>
+        );
+      })}
+
+      {movies.map((m) => (
+        <div key={m.id} className={styles.seasonBlock}>
+          <h3 className={styles.subsectionTitle}>{m.title}</h3>
+          <ThemeSection
+            title="Openings"
+            themes={(themesByMovieId.get(m.id) ?? []).filter((t) => t.theme_type === "OP")}
+            animeId={anime.id}
+            animeTitle={anime.title}
+          />
+          <ThemeSection
+            title="Endings"
+            themes={(themesByMovieId.get(m.id) ?? []).filter((t) => t.theme_type === "ED")}
+            animeId={anime.id}
+            animeTitle={anime.title}
+          />
+        </div>
+      ))}
+    </>
+  );
 
   return (
     <main className={styles.main}>
@@ -135,70 +223,7 @@ export default async function AnimeDetailPage({ params }) {
             </>
           )}
 
-          {generalThemes.length > 0 && (
-            <>
-              <h2 className={styles.sectionTitle}>Themes ({generalThemes.length})</h2>
-              <ThemeSection
-                title="Openings"
-                themes={generalThemes.filter((t) => t.theme_type === "OP")}
-                animeId={anime.id}
-                animeTitle={anime.title}
-              />
-              <ThemeSection
-                title="Endings"
-                themes={generalThemes.filter((t) => t.theme_type === "ED")}
-                animeId={anime.id}
-                animeTitle={anime.title}
-              />
-            </>
-          )}
-
-          {seasons.length > 0 ? (
-            <>
-              <h2 className={styles.sectionTitle}>Seasons</h2>
-              {seasons.map((s) => (
-                <SeasonBlock
-                  key={s.id}
-                  season={s}
-                  episodes={episodesBySeasonId.get(s.id) ?? []}
-                  openings={(themesBySeasonId.get(s.id) ?? []).filter((t) => t.theme_type === "OP")}
-                  endings={(themesBySeasonId.get(s.id) ?? []).filter((t) => t.theme_type === "ED")}
-                  animeId={anime.id}
-                  animeTitle={anime.title}
-                />
-              ))}
-              {unsectionedEpisodes.length > 0 && (
-                <EpisodeListBlock title="Other Episodes" episodes={unsectionedEpisodes} />
-              )}
-            </>
-          ) : (
-            episodes.length > 0 && (
-              <>
-                <h2 className={styles.sectionTitle}>Episodes ({episodes.length})</h2>
-                <EpisodeListBlock episodes={episodes} />
-              </>
-            )
-          )}
-
-          {movies.length > 0 && (
-            <>
-              <h2 className={styles.sectionTitle}>Movies</h2>
-              {movies.map((m) => (
-                <MovieBlock
-                  key={m.id}
-                  movie={m}
-                  openings={(themesByMovieId.get(m.id) ?? []).filter((t) => t.theme_type === "OP")}
-                  endings={(themesByMovieId.get(m.id) ?? []).filter((t) => t.theme_type === "ED")}
-                  animeId={anime.id}
-                  animeTitle={anime.title}
-                />
-              ))}
-            </>
-          )}
-
-          {user && episodes.length > 0 && (
-            <EpisodeRankingSection ranking={episodeRanking} animeId={anime.id} />
-          )}
+          <AnimeTabs episodesTab={episodesTab} themesTab={themesTab} />
         </div>
       </div>
     </main>
@@ -238,7 +263,7 @@ function ThemeSection({ title, themes, animeId, animeTitle }) {
   );
 }
 
-function SeasonBlock({ season, episodes, openings, endings, animeId, animeTitle }) {
+function SeasonEpisodesBlock({ season, episodes }) {
   const label = season.title || `Season ${season.season_number}`;
   return (
     <div className={styles.seasonBlock}>
@@ -246,23 +271,24 @@ function SeasonBlock({ season, episodes, openings, endings, animeId, animeTitle 
         {label}
         {season.year ? ` (${season.year})` : ""}
       </h3>
-      {episodes.length > 0 && <EpisodeListBlock episodes={episodes} compact />}
-      <ThemeSection title={`${label} Openings`} themes={openings} animeId={animeId} animeTitle={animeTitle} />
-      <ThemeSection title={`${label} Endings`} themes={endings} animeId={animeId} animeTitle={animeTitle} />
+      {episodes.length > 0 ? (
+        <EpisodeListBlock episodes={episodes} compact />
+      ) : (
+        <p className={styles.empty}>No episodes recorded yet.</p>
+      )}
     </div>
   );
 }
 
-function MovieBlock({ movie, openings, endings, animeId, animeTitle }) {
+function MovieSummaryBlock({ movie }) {
   return (
     <div className={styles.seasonBlock}>
       <h3 className={styles.subsectionTitle}>
+        <span className={styles.movieBadge}>Movie</span>
         {movie.title}
         {movie.year ? ` (${movie.year})` : ""}
       </h3>
       {movie.synopsis && <p className={styles.synopsis}>{movie.synopsis}</p>}
-      <ThemeSection title="Openings" themes={openings} animeId={animeId} animeTitle={animeTitle} />
-      <ThemeSection title="Endings" themes={endings} animeId={animeId} animeTitle={animeTitle} />
     </div>
   );
 }

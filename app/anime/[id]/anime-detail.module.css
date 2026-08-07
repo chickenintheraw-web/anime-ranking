@@ -116,6 +116,49 @@
   font-weight: 700;
 }
 
+.animeTabs {
+  margin-top: 32px;
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.animeTab,
+.animeTabActive {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+.animeTab {
+  color: var(--muted);
+}
+
+.animeTabActive {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--accent);
+}
+
+.movieBadge {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  margin-right: 8px;
+  border-radius: 4px;
+  background: var(--ranked-border);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
 .synopsis {
   margin-top: 12px;
   padding: 14px 16px;
